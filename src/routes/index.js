@@ -1,4 +1,4 @@
-const express = ('express');
+const express = require('express');
 
 const v1ApiRoutes = require('./v1/index')
 
