@@ -11,7 +11,8 @@ class BookingRepository {
             if(error.name == 'SequelizeValidationError') {
                 throw new ValidationError(error);
             }
-            throw new AppError('RepositoryError', 
+            throw new AppError(
+                'RepositoryError', 
                 'Cannot create Booking', 
                 'There was some issue creating the cooking, please try again later',
                 StatusCodes.INTERNAL_SERVER_ERROR
@@ -19,8 +20,35 @@ class BookingRepository {
         }
     }
 
-    async update() {
-        
+    async update(bookingId, data) {
+        try {
+            const booking = await Booking.findByPk(bookingId);
+            if(data.status){
+                booking.status = data.status;
+            }
+            await booking.save();
+            return booking;
+        } catch (error) {
+            throw new AppError(
+                'RepositoryError', 
+                'Cannot update Booking', 
+                'There was some issue updating the booking, please try again later',
+                StatusCodes.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    async getBooking(bookingId) {
+        try {
+            const booking = await Booking.findByPk(bookingId);
+            if(!booking){
+                return null
+            }
+            return booking;
+        } catch (error) {
+            console.log("Something went wrong in flight repository layer", error);
+            throw error;
+        }
     }
 }
 
